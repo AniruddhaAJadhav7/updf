@@ -8,14 +8,14 @@
             <input type="file" name="file" id="file" accept=".pdf" required>
             <label for="file">Choose a PDF file</label>
         </div>
-        <button type="submit" id="convertBtn">Convert</button>
+        <button type="submit" id="convertBtn" class="button">Convert</button>
     </form>
     <div id="loading" class="hidden">
         <div class="spinner"></div>
-        <p>Converting... Please wait.</p>
+        <p class="loading-text">Converting... Please wait.</p>
     </div>
     <div id="error" class="hidden">
-        <p>An error occurred during conversion. Please try again.</p>
+        <p class="error">An error occurred during conversion. Please try again.</p>
     </div>
 </section>
 {% endblock %}
@@ -28,6 +28,15 @@
         const errorDiv = document.getElementById('error');
         const convertBtn = document.getElementById('convertBtn');
         const fileInput = document.getElementById('file');
+        const fileLabel = document.querySelector('.file-input label');
+
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                fileLabel.textContent = e.target.files[0].name;
+            } else {
+                fileLabel.textContent = 'Choose a PDF file';
+            }
+        });
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -61,6 +70,8 @@
             .finally(() => {
                 loadingDiv.classList.add('hidden');
                 convertBtn.disabled = false;
+                fileInput.value = '';
+                fileLabel.textContent = 'Choose a PDF file';
             });
         });
     });
