@@ -1,12 +1,39 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const fileInput = document.getElementById('file');
-    const fileLabel = document.querySelector('.file-input label');
+    const form = document.getElementById('convertForm');
+    const loadingDiv = document.getElementById('loading');
+    const convertBtn = document.getElementById('convertBtn');
 
-    fileInput.addEventListener('change', function(e) {
-        if (e.target.files.length > 0) {
-            fileLabel.textContent = e.target.files[0].name;
-        } else {
-            fileLabel.textContent = 'Choose a PDF file';
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        loadingDiv.classList.remove('hidden');
+        convertBtn.disabled = true;
+
+        const formData = new FormData(form);
+        try {
+            const response = await fetch('/convert', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = formData.get('file').name.replace('.pdf', '.epub');
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            } else {
+                throw new Error('Conversion failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred during conversion. Please try again.');
+        } finally {
+            loadingDiv.classList.add('hidden');
+            convertBtn.disabled = false;
         }
     });
 });
