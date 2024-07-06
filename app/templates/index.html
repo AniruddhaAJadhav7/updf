@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="converter">
+    <h1>PDF to EPUB Converter</h1>
+    <form action="/convert" method="post" enctype="multipart/form-data" id="convertForm">
+        <div class="file-input">
+            <input type="file" name="file" id="file" accept=".pdf" required>
+            <label for="file">Choose a PDF file</label>
+        </div>
+        <button type="submit" id="convertBtn">Convert</button>
+    </form>
+    <div id="loading" class="hidden">
+        <div class="spinner"></div>
+        <p>Converting... Please wait.</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('convertForm').addEventListener('submit', function() {
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('convertBtn').disabled = true;
+    });
+</script>
+{% endblock %}

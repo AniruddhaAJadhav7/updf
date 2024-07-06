@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Conversion Result - PDF to EPUB Converter{% endblock %}
+
+{% block content %}
+<section class="result">
+    <h1>Conversion Completed</h1>
+    <p>Your EPUB file is ready for download.</p>
+    <a href="/download/{{ epub_filename }}" class="button download-button">Download EPUB</a>
+    <a href="/" class="button back-button">Convert Another PDF</a>
+</section>
+{% endblock %}
