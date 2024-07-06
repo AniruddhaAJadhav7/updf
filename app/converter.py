@@ -1,11 +1,10 @@
 import io
-import os
-from PyPDF2 import PdfFileReader
+from PyPDF2 import PdfReader
 from ebooklib import epub
 
 def pdf_to_epub(pdf_content, original_filename):
     # Create a PDF reader object
-    pdf_reader = PdfFileReader(io.BytesIO(pdf_content))
+    pdf_reader = PdfReader(io.BytesIO(pdf_content))
     
     # Create a new EPUB book
     book = epub.EpubBook()
@@ -17,10 +16,10 @@ def pdf_to_epub(pdf_content, original_filename):
     
     # Add chapters
     chapters = []
-    for page_num in range(pdf_reader.numPages):
+    for page_num in range(len(pdf_reader.pages)):
         chapter = epub.EpubHtml(title=f'Page {page_num + 1}', file_name=f'page_{page_num + 1}.xhtml', lang='en')
         chapter.content = f'<h1>Page {page_num + 1}</h1>'
-        chapter.content += f'<p>{pdf_reader.getPage(page_num).extractText()}</p>'
+        chapter.content += f'<p>{pdf_reader.pages[page_num].extract_text()}</p>'
         book.add_item(chapter)
         chapters.append(chapter)
     
@@ -41,11 +40,9 @@ def pdf_to_epub(pdf_content, original_filename):
     nav_css = epub.EpubItem(uid="style_nav", file_name="style/nav.css", media_type="text/css", content=style)
     book.add_item(nav_css)
     
-    # Write to file
-    if not os.path.exists('temp'):
-        os.makedirs('temp')
-    epub_filename = f"{original_filename.rsplit('.', 1)[0]}.epub"
-    epub_path = os.path.join('temp', epub_filename)
-    epub.write_epub(epub_path, book, {})
+    # Write to in-memory file
+    epub_file = io.BytesIO()
+    epub.write_epub(epub_file, book, {})
+    epub_file.seek(0)
     
-    return epub_path
+    return epub_file
