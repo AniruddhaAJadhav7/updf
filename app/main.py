@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Request, File, UploadFile, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import StreamingResponse
 from .converter import pdf_to_epub
-import os
+import io
 
 app = FastAPI()
 
@@ -15,20 +15,17 @@ async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.post("/convert")
-async def convert(request: Request, file: UploadFile = File(...)):
+async def convert(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
         raise HTTPException(400, detail="Invalid file type. Please upload a PDF file.")
     
     contents = await file.read()
     try:
-        epub_path = pdf_to_epub(contents, file.filename)
-        return templates.TemplateResponse("result.html", {"request": request, "epub_filename": os.path.basename(epub_path)})
+        epub_file = pdf_to_epub(contents, file.filename)
+        return StreamingResponse(
+            io.BytesIO(epub_file.getvalue()),
+            media_type="application/epub+zip",
+            headers={"Content-Disposition": f"attachment; filename={file.filename.rsplit('.', 1)[0]}.epub"}
+        )
     except Exception as e:
         raise HTTPException(500, detail=str(e))
-
-@app.get("/download/{filename}")
-async def download(filename: str):
-    file_path = f"temp/{filename}"
-    if os.path.exists(file_path):
-        return FileResponse(file_path, media_type="application/epub+zip", filename=filename)
-    raise HTTPException(404, detail="File not found")
