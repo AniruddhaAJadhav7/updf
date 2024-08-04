@@ -10,3 +10,107 @@
     <a href="/" class="button back-button">Convert Another PDF</a>
 </section>
 {% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        color: #333;
+    }
+
+    .container {
+        width: 80%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    header {
+        background: #333;
+        color: #fff;
+        padding: 10px 0;
+    }
+
+    header nav ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    header nav ul li {
+        display: inline;
+        margin: 0 15px;
+    }
+
+    header nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    header nav ul li a:hover {
+        color: #ddd;
+    }
+
+    main {
+        padding: 20px;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    footer {
+        text-align: center;
+        padding: 10px 0;
+        background: #333;
+        color: #fff;
+        margin-top: 20px;
+    }
+
+    .result {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .result h1 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .button {
+        padding: 10px 20px;
+        background: #007BFF;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.3s;
+    }
+
+    .button:hover {
+        background: #0056b3;
+    }
+
+    .download-button {
+        background: #28a745;
+    }
+
+    .download-button:hover {
+        background: #218838;
+    }
+
+    .back-button {
+        background: #ffc107;
+        color: #333;
+    }
+
+    .back-button:hover {
+        background: #e0a800;
+    }
+</style>
+{% endblock %}
